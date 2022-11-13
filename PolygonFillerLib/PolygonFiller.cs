@@ -65,7 +65,7 @@ namespace PolygonFillerLib
                     continue;
 
                 Vertex lower, higher;
-                
+
                 if (e.FirstVertex.Coordinates.Y < e.SecondVertex.Coordinates.Y)
                 {
                     lower = e.FirstVertex;

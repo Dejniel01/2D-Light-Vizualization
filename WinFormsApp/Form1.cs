@@ -1,17 +1,12 @@
-﻿using CommonClassLib;
-using CommonClassLib.Structures;
+﻿using CommonClassLib.Structures;
 using FileParserLib.ObjParser;
 using PolygonFillerLib;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WinFormsApp
@@ -20,9 +15,10 @@ namespace WinFormsApp
     {
         private readonly List<Triangle> triangles;
         private readonly Bitmap drawArea;
+        private Bitmap texture = null;
 
         private Color lightColor = Color.White;
-        private Color objectColor = Color.Yellow;
+        private Color? objectColor = Color.DeepPink;
         private readonly Vector lightCoordinates;
 
         private Timer timer;
@@ -30,9 +26,7 @@ namespace WinFormsApp
         private float theta = 0;
 
         private Stopwatch stopwatch = new Stopwatch();
-        private int frames = 0;
         private long prevElapsed = 0;
-        private float fps = 0;
 
         public Form1()
         {
@@ -43,6 +37,14 @@ namespace WinFormsApp
             drawArea = new Bitmap(600, 800);
             this.Canvas.Image = drawArea;
 
+            FillingSelectionCanvas.Image = new Bitmap(FillingSelectionCanvas.Size.Width, FillingSelectionCanvas.Size.Height);
+            using var g1 = Graphics.FromImage(FillingSelectionCanvas.Image);
+            g1.Clear(objectColor.Value);
+
+            LightSelectionCanvas.Image = new Bitmap(LightSelectionCanvas.Width, LightSelectionCanvas.Height);
+            using var g2 = Graphics.FromImage(LightSelectionCanvas.Image);
+            g2.Clear(lightColor);
+
             lightCoordinates = new Vector(drawArea.Width / 2, drawArea.Height / 2, -1);
 
             FitTrianglesToDrawArea();
@@ -52,7 +54,7 @@ namespace WinFormsApp
             timer = new Timer();
             timer.Tick += Timer_Tick;
             timer.Interval = 5;
-            timer.Start();
+            //timer.Start();
             stopwatch.Start();
         }
 
@@ -121,7 +123,7 @@ namespace WinFormsApp
 
             foreach (var t in triangles)
             {
-                var polfil = new TriangleFillerWithColorInterpolation(t, drawArea, (float)ks_selector.Value, (float)kd_selector.Value, (float)m_selector.Value, objectColor, lightColor, lightCoordinates);
+                var polfil = new TriangleFillerWithColorInterpolation(t, drawArea, (float)ks_selector.Value, (float)kd_selector.Value, (float)m_selector.Value, objectColor, texture, lightColor, lightCoordinates);
                 polfil.FillPolygon();
 
                 t.DrawShape(drawArea);
@@ -138,6 +140,91 @@ namespace WinFormsApp
         private void Selector_ValueChanged(object sender, EventArgs e)
         {
             Redraw();
+        }
+
+        private void PlayButton_Click(object sender, EventArgs e)
+        {
+            if (!timer.Enabled)
+                timer.Start();
+        }
+
+        private void PauseButton_Click(object sender, EventArgs e)
+        {
+            if (timer.Enabled)
+                timer.Stop();
+        }
+
+        private void RestartButton_Click(object sender, EventArgs e)
+        {
+            r = 0;
+            theta = 0;
+        }
+
+        private void ColorButton_Click(object sender, EventArgs e)
+        {
+            if (colorDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                if (!(texture is null))
+                {
+                    texture.Dispose();
+                    texture = null;
+                }
+
+                objectColor = colorDialog.Color;
+
+                if (!(FillingSelectionCanvas.Image is null))
+                {
+                    FillingSelectionCanvas.Image.Dispose();
+                    FillingSelectionCanvas.Image = null;
+                }
+
+                FillingSelectionCanvas.Image = new Bitmap(FillingSelectionCanvas.Width, FillingSelectionCanvas.Height);
+
+                using var g = Graphics.FromImage(FillingSelectionCanvas.Image);
+                g.Clear(objectColor.Value);
+
+                Redraw();
+            }
+        }
+
+        private void TextureButton_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                objectColor = null;
+
+                if (!(FillingSelectionCanvas.Image is null))
+                {
+                    FillingSelectionCanvas.Image.Dispose();
+                    FillingSelectionCanvas.Image = null;
+                }
+
+                texture = new Bitmap(openFileDialog.FileName);
+                FillingSelectionCanvas.Image = new Bitmap(texture, FillingSelectionCanvas.Width, FillingSelectionCanvas.Height);
+
+                Redraw();
+            }
+        }
+
+        private void LightColorButton_Click(object sender, EventArgs e)
+        {
+            if(colorDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                lightColor = colorDialog.Color;
+
+                if (!(LightSelectionCanvas.Image is null))
+                {
+                    LightSelectionCanvas.Image.Dispose();
+                    LightSelectionCanvas.Image = null;
+                }
+
+                LightSelectionCanvas.Image = new Bitmap(LightSelectionCanvas.Width, LightSelectionCanvas.Height);
+
+                using var g = Graphics.FromImage(LightSelectionCanvas.Image);
+                g.Clear(lightColor);
+
+                Redraw();
+            }    
         }
     }
 }
