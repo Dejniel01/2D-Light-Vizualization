@@ -10,37 +10,39 @@ namespace PolygonFillerLib
 {
     public abstract class PolygonFiller
     {
-        private readonly (EdgeBucket Value, EdgeBucket Last)[] ET;
-        private readonly List<EdgeBucket> AET;
+        private readonly List<EdgeBucket>[] ET;
+        private List<EdgeBucket> AET;
         protected Bitmap drawArea;
         protected int yStart = int.MaxValue;
         protected int yEnd = -1;
-        protected Polygon polygon;
-
-        protected PolygonFiller(Polygon polygon, Bitmap drawArea)
+        public Polygon Polygon
         {
-            ET = new (EdgeBucket Value, EdgeBucket Last)[drawArea.Height];
-            AET = new List<EdgeBucket>(polygon.Edges.Value.Count);
-            this.drawArea = drawArea;
-            this.polygon = polygon;
-
-            PrepareET(polygon);
+            get;
+            set;
         }
 
-        public abstract void FillPolygon();
+        protected PolygonFiller(Bitmap drawArea)
+        {
+            ET = new List<EdgeBucket>[drawArea.Height];
+            this.drawArea = drawArea;
+        }
+
+        public virtual void FillPolygon(Polygon polygon)
+        {
+            Polygon = polygon;
+        }
 
         protected void FillPolygon(Func<int, int, Color> getColorFunc)
         {
+            AET = new List<EdgeBucket>(Polygon.Edges.Value.Count);
+            PrepareET(Polygon);
+
             using var fastBitmap = drawArea.FastLock();
 
             for (int y = yStart; y < yEnd; ++y)
             {
-                EdgeBucket e = ET[y].Value;
-                while (!(e is null))
-                {
-                    AET.Add(e);
-                    e = e.Next;
-                }
+                if(!(ET[y] is null))
+                    AET.AddRange(ET[y]);
 
                 var orderedX = AET.OrderBy(eb => eb.XOfYmin).ToArray();
 
@@ -55,10 +57,13 @@ namespace PolygonFillerLib
             }
         }
 
-        
+
 
         private void PrepareET(Polygon polygon)
         {
+            Array.Fill(ET, null);
+            yStart = int.MaxValue;
+            yEnd = -1;
             foreach (var e in polygon.Edges.Value)
             {
                 if (Math.Abs(e.FirstVertex.Coordinates.Y - e.SecondVertex.Coordinates.Y) < 1e-3)
@@ -79,12 +84,11 @@ namespace PolygonFillerLib
                 else
                     continue;
 
-                if (ET[(int)lower.Coordinates.Y].Value is null)
-                    ET[(int)lower.Coordinates.Y].Last
-                        = ET[(int)lower.Coordinates.Y].Value
-                        = new EdgeBucket(higher, lower);
-                else
-                    ET[(int)lower.Coordinates.Y].Last.Next = new EdgeBucket(higher, lower);
+                if (ET[(int)lower.Coordinates.Y] is null)
+                    ET[(int)lower.Coordinates.Y]
+                        = new List<EdgeBucket>();
+
+                    ET[(int)lower.Coordinates.Y].Add(new EdgeBucket(higher, lower));
 
                 if (yStart > (int)lower.Coordinates.Y) yStart = (int)lower.Coordinates.Y;
                 if (yEnd < (int)higher.Coordinates.Y) yEnd = (int)higher.Coordinates.Y;

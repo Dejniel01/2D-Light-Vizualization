@@ -15,6 +15,9 @@ namespace FileParserLib.ObjParser
             var vectors = new List<Vector>() { null };
             var triangles = new List<Triangle>();
 
+            if (!File.Exists(filePath))
+                return null;
+
             foreach(var line in File.ReadLines(filePath))
             {
                 switch(line.Substring(0, 2))

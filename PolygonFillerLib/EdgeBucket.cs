@@ -9,11 +9,9 @@ namespace PolygonFillerLib
     {
         internal EdgeBucket(Vertex higher, Vertex lower)
         {
-
             Ymax = (int)higher.Coordinates.Y;
             XOfYmin = lower.Coordinates.X;
             InvSlope = (higher.Coordinates.X - lower.Coordinates.X) / (higher.Coordinates.Y - lower.Coordinates.Y);
-            Next = null;
         }
 
         internal int Ymax
@@ -27,11 +25,6 @@ namespace PolygonFillerLib
             set;
         }
         internal float InvSlope
-        {
-            get;
-            set;
-        }
-        internal EdgeBucket Next
         {
             get;
             set;

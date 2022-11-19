@@ -24,16 +24,24 @@ namespace CommonClassLib
         public static float Length(float x1, float y1, float x2, float y2)
             => (float)Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 
-        public static float Heron(float x1, float y1, float x2, float y2, float x3, float y3)
+        public static Vector CrossProduct(Vector v1, Vector v2)
+            => new Vector(v1.Y * v2.Z - v1.Z * v2.Y, v1.Z * v2.X - v1.X * v2.Z, v1.X * v2.Y - v1.Y * v2.X);
+
+        public static float TriangleArea(float x1, float y1, float x2, float y2, float x3, float y3)
         {
-            var a = Length(x1, y1, x2, y2);
-            var b = Length(x1, y1, x3, y3);
-            var c = Length(x2, y2, x3, y3);
-            var p = (a + b + c) / 2;
+            float v1x = x2 - x1;
+            float v1y = y2 - y1;
+            float v2x = x3 - x1;
+            float v2y = y3 - y1;
 
-            var Psq = p * (p - a) * (p - b) * (p - c);
-
-            return Psq > 0 ? (float)Math.Sqrt(Psq) : 0;
+            return Math.Abs(v1x * v2y - v1y * v2x) / 2;
         }
+
+        public static Vector MultiplyMatrixAndVector((Vector V1, Vector V2, Vector V3) M, Vector v)
+            => new Vector(
+                M.V1.X * v.X + M.V2.X * v.Y + M.V3.X * v.Z,
+                M.V1.Y * v.X + M.V2.Y * v.Y + M.V3.Y * v.Z,
+                M.V1.Z * v.X + M.V2.Z * v.Y + M.V3.Z * v.Z
+                );
     }
 }

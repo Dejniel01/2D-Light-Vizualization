@@ -32,7 +32,10 @@ namespace CommonClassLib.Structures
 
         public Vector GetNormalizedVector()
         {
-            return this / (float)Math.Sqrt(X * X + Y * Y + Z * Z);
+            var l = (float)Math.Sqrt(X * X + Y * Y + Z * Z);
+            if (l == 0)
+                return this * 1;
+            return this / l;
         }
 
         public static Vector operator +(Vector v1, Vector v2)
