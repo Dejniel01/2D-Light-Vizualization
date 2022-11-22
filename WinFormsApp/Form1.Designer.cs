@@ -702,7 +702,7 @@ namespace WinFormsApp
             // 
             // selectObjDialog
             // 
-            this.selectObjDialog.Filter = "bmp files (*.bmp)|*.bmp";
+            this.selectObjDialog.Filter = "obj files (*.obj)|*.obj";
             // 
             // Form1
             // 

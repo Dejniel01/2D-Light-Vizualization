@@ -122,8 +122,8 @@ namespace WinFormsApp
 			}
 
 			var z = coordinates.Max(c => c.Z);
-			Z_slider.Value = (int)z + 100;
 			Z_slider.Minimum = (int)z + 10;
+			Z_slider.Value = (int)z + 100;
 
 			Z_label.Text = Z_slider.Value.ToString();
 

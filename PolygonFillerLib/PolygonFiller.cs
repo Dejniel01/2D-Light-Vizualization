@@ -71,12 +71,12 @@ namespace PolygonFillerLib
 
                 Vertex lower, higher;
 
-                if (e.FirstVertex.Coordinates.Y < e.SecondVertex.Coordinates.Y)
+                if ((int)e.FirstVertex.Coordinates.Y < (int)e.SecondVertex.Coordinates.Y)
                 {
                     lower = e.FirstVertex;
                     higher = e.SecondVertex;
                 }
-                else if (e.FirstVertex.Coordinates.Y > e.SecondVertex.Coordinates.Y)
+                else if ((int)e.FirstVertex.Coordinates.Y > (int)e.SecondVertex.Coordinates.Y)
                 {
                     lower = e.SecondVertex;
                     higher = e.FirstVertex;
