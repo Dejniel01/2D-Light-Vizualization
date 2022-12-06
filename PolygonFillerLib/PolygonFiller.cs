@@ -49,7 +49,8 @@ namespace PolygonFillerLib
                 for (int i = 0; i < AET.Count; i += 2)
                 {
                     for (float x = orderedX[i].XOfYmin; x <= orderedX[i + 1].XOfYmin; x++)
-                        fastBitmap.SetPixel((int)x, y, getColorFunc((int)x, y));
+                        if(x >= 0 && x < drawArea.Width)
+                            fastBitmap.SetPixel((int)x, y, getColorFunc((int)x, y));
                 }
 
                 AET.RemoveAll(eb => eb.Ymax == y + 1);
@@ -70,28 +71,45 @@ namespace PolygonFillerLib
                     continue;
 
                 Vertex lower, higher;
+                int firstX = (int)e.FirstVertex.Coordinates.X, firstY = (int)e.FirstVertex.Coordinates.Y;
+                int secondX = (int)e.SecondVertex.Coordinates.X, secondY = (int)e.SecondVertex.Coordinates.Y;
+                if (firstX < 0) firstX = 0;
+                if (firstY < 0) firstY = 0;
+                if (secondX < 0) secondX = 0;
+                if (secondY < 0) secondY = 0;
+                if (firstX >= drawArea.Width) firstX = drawArea.Width - 1;
+                if (firstY >= drawArea.Height) firstY = drawArea.Height - 1;
+                if (secondX >= drawArea.Width) secondX = drawArea.Width - 1;
+                if (secondY >= drawArea.Height) secondY = drawArea.Height - 1;
 
-                if ((int)e.FirstVertex.Coordinates.Y < (int)e.SecondVertex.Coordinates.Y)
+                int lowerY = 0;
+                int higherY = 0;
+
+                if (firstY < secondY)
                 {
                     lower = e.FirstVertex;
                     higher = e.SecondVertex;
+                    lowerY = firstY;
+                    higherY = secondY;
                 }
-                else if ((int)e.FirstVertex.Coordinates.Y > (int)e.SecondVertex.Coordinates.Y)
+                else if (firstY > secondY)
                 {
                     lower = e.SecondVertex;
                     higher = e.FirstVertex;
+                    lowerY = secondY;
+                    higherY = firstY;
                 }
                 else
                     continue;
 
-                if (ET[(int)lower.Coordinates.Y] is null)
-                    ET[(int)lower.Coordinates.Y]
+                if (ET[lowerY] is null)
+                    ET[lowerY]
                         = new List<EdgeBucket>();
 
-                    ET[(int)lower.Coordinates.Y].Add(new EdgeBucket(higher, lower));
+                    ET[lowerY].Add(new EdgeBucket(higher, lower));
 
-                if (yStart > (int)lower.Coordinates.Y) yStart = (int)lower.Coordinates.Y;
-                if (yEnd < (int)higher.Coordinates.Y) yEnd = (int)higher.Coordinates.Y;
+                if (yStart > lowerY) yStart = lowerY;
+                if (yEnd < higherY) yEnd = higherY;
             }
         }
     }

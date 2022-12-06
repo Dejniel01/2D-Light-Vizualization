@@ -1,6 +1,7 @@
 ﻿using CommonClassLib.Structures;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,9 +26,9 @@ namespace FileParserLib.ObjParser
                     case "v ":
                         var pointSplit = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                         points.Add(new Vector(
-                            float.Parse(pointSplit[1]),
-                            float.Parse(pointSplit[2]),
-                            float.Parse(pointSplit[3])
+                            float.Parse(pointSplit[1], CultureInfo.InvariantCulture),
+                            float.Parse(pointSplit[2], CultureInfo.InvariantCulture),
+                            float.Parse(pointSplit[3], CultureInfo.InvariantCulture)
                         ));
                         break;
 
@@ -35,9 +36,9 @@ namespace FileParserLib.ObjParser
                         var vectorSplit = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                         vectors.Add(new Vector(
                         
-                            float.Parse(vectorSplit[1]),
-                            float.Parse(vectorSplit[2]),
-                            float.Parse(vectorSplit[3])
+                            float.Parse(vectorSplit[1], CultureInfo.InvariantCulture),
+                            float.Parse(vectorSplit[2], CultureInfo.InvariantCulture),
+                            float.Parse(vectorSplit[3], CultureInfo.InvariantCulture)
                         ));
                         break;
 

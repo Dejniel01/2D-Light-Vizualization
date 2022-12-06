@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CommonClassLib.Structures
 {
-    public abstract class Polygon
+    public class Polygon
     {
         public Polygon()
         {

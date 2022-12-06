@@ -63,6 +63,7 @@ namespace WinFormsApp
             this.LightColorButton = new System.Windows.Forms.Button();
             this.LightSelectionCanvas = new System.Windows.Forms.PictureBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.CloudsCheckBox = new System.Windows.Forms.CheckBox();
             this.LightCheckBox = new System.Windows.Forms.CheckBox();
             this.EdgesCheckbox = new System.Windows.Forms.CheckBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
@@ -429,9 +430,9 @@ namespace WinFormsApp
             this.groupBox4.AutoSize = true;
             this.groupBox4.Controls.Add(this.tableLayoutPanel3);
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox4.Location = new System.Drawing.Point(535, 975);
+            this.groupBox4.Location = new System.Drawing.Point(535, 999);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(294, 277);
+            this.groupBox4.Size = new System.Drawing.Size(294, 253);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Animation controls";
@@ -539,15 +540,28 @@ namespace WinFormsApp
             // groupBox6
             // 
             this.groupBox6.AutoSize = true;
+            this.groupBox6.Controls.Add(this.CloudsCheckBox);
             this.groupBox6.Controls.Add(this.LightCheckBox);
             this.groupBox6.Controls.Add(this.EdgesCheckbox);
             this.groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox6.Location = new System.Drawing.Point(535, 895);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(294, 74);
+            this.groupBox6.Size = new System.Drawing.Size(294, 98);
             this.groupBox6.TabIndex = 5;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Other controls";
+            // 
+            // CloudsCheckBox
+            // 
+            this.CloudsCheckBox.AutoSize = true;
+            this.CloudsCheckBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.CloudsCheckBox.Location = new System.Drawing.Point(3, 71);
+            this.CloudsCheckBox.Name = "CloudsCheckBox";
+            this.CloudsCheckBox.Size = new System.Drawing.Size(288, 24);
+            this.CloudsCheckBox.TabIndex = 2;
+            this.CloudsCheckBox.Text = "Draw clouds and shadows?";
+            this.CloudsCheckBox.UseVisualStyleBackColor = true;
+            this.CloudsCheckBox.CheckedChanged += new System.EventHandler(this.UpdateFillingAlgorithm);
             // 
             // LightCheckBox
             // 
@@ -804,6 +818,7 @@ namespace WinFormsApp
         private System.Windows.Forms.Button FileButton;
         private System.Windows.Forms.Label FilenameLabel;
         private System.Windows.Forms.OpenFileDialog selectObjDialog;
+        private System.Windows.Forms.CheckBox CloudsCheckBox;
     }
 }
 
